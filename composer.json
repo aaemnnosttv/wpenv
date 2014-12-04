@@ -1,0 +1,16 @@
+{
+    "name": "aaemnnosttv/bedrock-wpenv",
+    "type": "wordpress-muplugin",
+    "description": "Environment-specific control",
+    "require": {
+        "symfony/yaml": "~2.6",
+        "composer/installers": "~1.0.6"
+    },
+    "license": "MIT License",
+    "authors": [
+        {
+            "name": "Evan Mattson",
+            "email": "me@aaemnnost.tv"
+        }
+    ]
+}
