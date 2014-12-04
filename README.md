@@ -18,9 +18,11 @@ WPEnv modifies the return value of the options we want to control.  Simple value
 
 # Getting Started
 
+Add `.wpenv.yml` to the main project's `.gitignore`.
+
 We need to define a constant so that WPEnv can load the config file.
 Edit `config/application.php`, near the top, just under the `$root_dir` add `define( 'WPENV_ROOT', $root_dir );`.
 
-Copy `.wpenv.sample.yml` from `mu-plugins/bedrock-wpenv` to the same directory as `.env`.
+Copy `.wpenv.example.yml` from `mu-plugins/bedrock-wpenv` to the same directory as `.env`.
 Rename the new file to `.wpenv.yml`.
 Edit to your heart's content.
