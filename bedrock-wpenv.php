@@ -7,6 +7,7 @@
 namespace Aaemnnosttv;
 
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 class WPEnv
 {
@@ -35,9 +36,15 @@ class WPEnv
 	{
 		$this->config_file = $config;
 
-		$this->data = Yaml::parse( $config );
+		try {
+			$this->data = Yaml::parse( $config );
+		}
+		catch ( ParseException $e ) {
+			wp_die('<h1>Error parsing .wpenv.yml</h1>' . $e->getMessage(), 'WPEnv Error');
+		}
 
-		$this->hooks();
+		if ( $this->data )
+			$this->hooks();
 	}
 
 	private function hooks()
