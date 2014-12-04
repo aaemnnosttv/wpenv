@@ -17,14 +17,9 @@ class WPEnv
 
 	private $config_file;
 
-	/**
-	 * Initialize the class
-	 * PROJECT_ROOT should be defined as the absolute path to the root directory where .env resides
-	 * @return [type] [description]
-	 */
 	public static function init()
 	{
-		$config = defined('PROJECT_ROOT') ? path_join(PROJECT_ROOT,'.wpenv.yml') : null;
+		$config = defined('WPENV_ROOT') ? path_join(WPENV_ROOT,'.wpenv.yml') : null;
 		
 		if ( file_exists( $config ) && is_null( self::$instance ) )
 		{
