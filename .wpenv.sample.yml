@@ -1,0 +1,19 @@
+
+# YAML Reference: http://www.yaml.org/refcard.html
+
+# define your get_option overrides under the "options" key like so:
+options:
+  blogdescription: Not just another WordPress Site (hardcoded in .wpenv!)
+  option_key:
+    value_key_1: This is sweet
+    blah: "What's fer dinner?"
+  boolean_false_values:
+    - n
+    - FALSE
+    - No
+    - off
+  boolean_true_values:
+    - y
+    - true
+    - Yes
+    - ON
