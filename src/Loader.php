@@ -5,9 +5,9 @@ use Symfony\Component\Yaml\Exception\ParseException;
 
 class Loader
 {
-    private $filepath;
-    private $data;
-    private $hooks_set;
+    protected $filepath;
+    protected $filename;
+    protected $data;
 
     public function __construct( $filepath )
     {
@@ -91,14 +91,9 @@ class Loader
         WpEnv::register_loader( $this );
     }
 
-    private function hooks()
+    protected function hooks()
     {
         $this->hooks_set = true;
-
-        if ( ! empty( $this->data['options'] ) && is_array( $this->data['options'] ) )
-        {
-            $this->override_options();
-        }
     }
 
     /**
@@ -109,7 +104,7 @@ class Loader
      *
      * @return \Closure
      */
-    private function get_override_callback( $option, $override )
+    protected function get_override_callback( $option, $override )
     {
         return function( $saved ) use ( $option, $override )
         {
@@ -128,34 +123,13 @@ class Loader
         };
     }
 
-    private function override_options()
-    {
-        foreach ( $this->data[ 'options' ] as $option => $override )
-        {
-            $callback = $this->get_override_callback($option, $override);
-
-            // pre_option "short circuit" filter..
-            // If we knew we would want to completely replace the returned value, we use this filter
-            // to bypass the others. We don't have a convention to set that yet, so we will
-            // disable this for now to ensure that our override will take precedence.
-            //
-            // To disable this, we just need to return false.
-            add_filter("pre_option_$option"    , '__return_false', 99999);
-
-            // set value if it doesn't exist
-            add_filter("default_option_$option", $callback, 99999, 1);
-            // override return if it does
-            add_filter("option_$option"        , $callback, 99999, 1);
-        }
-    }
-
     /**
      * Set override filters
      * Can only be called once WordPress plugin api has been loaded
      */
     public function enforce()
     {
-        if ( $this->data && ! $this->hooks_set ) {
+        if ( $this->data ) {
             $this->hooks();
         }
     }
