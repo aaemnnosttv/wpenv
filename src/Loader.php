@@ -48,7 +48,6 @@ class Loader
      */
     function required( array $keys )
     {
-        if ( ! $this->data )
         $missing_keys = [];
 
         foreach ( $keys as $key )
