@@ -12,7 +12,7 @@ class Loader
     public function __construct( $filepath )
     {
         $this->filepath = $filepath;
-        $this->filename = path_info($this->filepath, PATHINFO_FILENAME);
+        $this->filename = pathinfo($this->filepath, PATHINFO_FILENAME);
         $this->load();
     }
 
