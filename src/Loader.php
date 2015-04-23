@@ -52,6 +52,7 @@ class Loader
 
         foreach ( $keys as $key )
         {
+            // handle hierarchical check
             if ( false !== strpos($key, '.') )
             {
                 $data = $this->data;
@@ -62,9 +63,9 @@ class Loader
                     // check the next link from the front of the chain
                     $check = array_shift($hierarchy);
 
-                    if ( ! isset( $data[ $check ] ) ) {
+                    if ( ! isset($data[ $check ]) ) {
                         $missing_keys[] = $key;
-                        break; // no need to go deeper
+                        continue; // no need to go deeper
                     }
                     else
                     {
@@ -72,6 +73,10 @@ class Loader
                         $data = $data[ $check ];
                     }
                 }
+            }
+            // the required key is a top-level key
+            elseif ( ! isset($this->data[ $key ]) ) {
+                $missing_keys[] = $key;
             }
         }
 
