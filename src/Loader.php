@@ -20,7 +20,7 @@ class Loader
      * Attempt to parse the Yaml config and load the data
      * @throws \Exception
      */
-    function load()
+    protected function load()
     {
         if ( ! file_exists($this->filepath) ) {
             throw new \Exception("WpEnv could not load your configuration file at $this->filepath");
@@ -46,7 +46,7 @@ class Loader
      *
      * @throws \Exception
      */
-    function required( array $keys )
+    public function required( array $keys )
     {
         $missing_keys = [];
 
