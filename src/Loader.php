@@ -26,16 +26,12 @@ class Loader
             throw new \Exception("WpEnv could not load your configuration file at $this->filepath");
         }
 
-        if ( is_null( $this->data ) )
-        {
-            try {
-                $this->data = Yaml::parse( $this->filepath );
-            }
-            catch ( ParseException $e ) {
-                wp_die("<h1>There was a problem parsing {$this->filename}</h1>" . $e->getMessage(), 'WpEnv Error');
-            }
+        try {
+            $this->data = Yaml::parse( $this->filepath );
         }
-
+        catch ( ParseException $e ) {
+            wp_die("<h1>There was a problem parsing {$this->filename}</h1>" . $e->getMessage(), 'WpEnv Error');
+        }
     }
 
     /**
