@@ -9,7 +9,7 @@ abstract class Loader
     protected $filename;
     protected $data;
 
-    public function __construct( $filepath = '' )
+    public function __construct( $filepath = '.wpenv.yml' )
     {
         if ( ! $filepath ) throw new \InvalidArgumentException('A filepath to the config file must be provided.');
 
