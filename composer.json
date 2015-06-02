@@ -2,18 +2,24 @@
     "name": "aaemnnosttv/bedrock-wpenv",
     "type": "wordpress-muplugin",
     "description": "Environment-specific control over WordPress Options and more",
-    "require": {
-        "php": ">=5.4",
-        "composer/installers": "~1.0",
-        "symfony/yaml": "~2.6"
-    },
     "authors": [
         {
             "name": "Evan Mattson",
             "email": "me@aaemnnost.tv"
         }
     ],
+    "require": {
+        "php": ">=5.4",
+        "composer/installers": "~1.0",
+        "symfony/yaml": "~2.6"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^2.2"
+    },
     "autoload": {
-        "psr-4": { "WpEnv\\": "src" }
+        "psr-4": { "WpEnv\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "WpEnv\\Stub\\": "tests/stubs/" }
     }
 }
