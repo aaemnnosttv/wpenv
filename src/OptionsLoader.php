@@ -4,7 +4,7 @@ class OptionsLoader extends Loader
 {
     const KEY = 'options';
 
-    protected function hooks()
+    protected function apply_overrides()
     {
         if ( !empty($this->data[ static::KEY ]) && is_array($this->data[ static::KEY ]) )
         {
@@ -26,5 +26,33 @@ class OptionsLoader extends Loader
                 add_filter("option_$option", $callback, 99999, 1);
             }
         }
+    }
+
+    /**
+     * Create an anonymous callback to use for the filter
+     *
+     * @param $option  the option name
+     * @param $override  the override value
+     *
+     * @return \Closure
+     */
+    protected function get_override_callback( $option, $override )
+    {
+        return function( $saved ) use ( $option, $override )
+        {
+            if ( $option && ! is_null( $override ) )
+            {
+                // need logic to determine replace or merge
+                // maybe $override['_wpenv'] = 'override' ? or ['!{key}']
+                // default: merge
+                if ( is_array( $saved ) && is_array( $override ) ) {
+                    return array_merge( $saved, $override );
+                } else {
+                    return $override;
+                }
+            }
+
+            return $saved;
+        };
     }
 }

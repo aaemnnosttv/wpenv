@@ -3,14 +3,16 @@
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 
-class Loader
+abstract class Loader
 {
     protected $filepath;
     protected $filename;
     protected $data;
 
-    public function __construct( $filepath )
+    public function __construct( $filepath = '' )
     {
+        if ( ! $filepath ) throw new \InvalidArgumentException('A filepath to the config file must be provided.');
+
         $this->filepath = $filepath;
         $this->filename = pathinfo($this->filepath, PATHINFO_FILENAME);
         $this->load();
@@ -22,16 +24,11 @@ class Loader
      */
     protected function load()
     {
-        if ( ! file_exists($this->filepath) ) {
-            throw new \Exception("WpEnv could not load your configuration file at $this->filepath");
+        if ( ! file_exists($this->filepath) || ! is_readable($this->filepath) ) {
+            throw new \Exception("WpEnv could not load your configuration file at {$this->filepath}");
         }
 
-        try {
-            $this->data = Yaml::parse( $this->filepath );
-        }
-        catch ( ParseException $e ) {
-            wp_die("<h1>There was a problem parsing {$this->filename}</h1>" . $e->getMessage(), 'WpEnv Error');
-        }
+        $this->data = Yaml::parse( file_get_contents($this->filepath) );
     }
 
     /**
@@ -44,89 +41,84 @@ class Loader
      */
     public function required( array $keys )
     {
-        $missing_keys = [];
+        $missing_keys = [ ];
 
         foreach ( $keys as $key )
         {
-            // handle hierarchical check
-            if ( false !== strpos($key, '.') )
-            {
-                $data = $this->data;
-                $hierarchy = explode('.', $key);
-
-                while ( count( $hierarchy ) )
-                {
-                    // check the next link from the front of the chain
-                    $check = array_shift($hierarchy);
-
-                    if ( ! isset($data[ $check ]) ) {
-                        $missing_keys[] = $key;
-                        continue; // no need to go deeper
-                    }
-                    else
-                    {
-                        // if it is set, update our data-check for the next loop
-                        $data = $data[ $check ];
-                    }
-                }
-            }
-            // the required key is a top-level key
-            elseif ( ! isset($this->data[ $key ]) ) {
-                $missing_keys[] = $key;
+            if ( ! $found = $this->validate_data_is_set_for_key($key) ) {
+                $missing_keys[ ] = $key;
             }
         }
 
-        if ( ! empty( $missing_keys ) )
+        if ( $missing_keys )
         {
-            throw new \Exception("Missing required keys: " . join(', ', $missing_keys));
+            throw new \Exception("Missing required keys: " . json_encode($missing_keys));
         }
     }
 
+	/**
+     * Register this loader to be activated
+     */
     public function activate()
     {
         WpEnv::register_loader( $this );
     }
 
-    protected function hooks()
-    {
-        $this->hooks_set = true;
-    }
 
     /**
-     * Create an anonymous callback to use for the filter
-     *
-     * @param $option  the option name
-     * @param $override  the override value
-     *
-     * @return \Closure
-     */
-    protected function get_override_callback( $option, $override )
-    {
-        return function( $saved ) use ( $option, $override )
-        {
-            if ( $option && ! is_null( $override ) )
-            {
-                // need logic to determine replace or merge
-                // maybe $override['_wpenv'] = 'override' ? or ['!{key}']
-                // default: merge
-                if ( is_array( $saved ) && is_array( $override ) )
-                    return array_merge( $saved, $override );
-                else
-                    return $override;
-            }
-
-            return $saved;
-        };
-    }
-
-    /**
-     * Set override filters
+     * Enforce overrides
      * Can only be called once WordPress plugin api has been loaded
      */
     public function enforce()
     {
         if ( $this->data ) {
-            $this->hooks();
+            $this->apply_overrides();
         }
     }
+
+	/**
+     * @return mixed
+     */
+    abstract protected function apply_overrides();
+
+    /**
+     * Parses a string key to check if the related internal data is set
+     *
+     * @param $key
+     *
+     * @return bool
+     */
+    protected function validate_data_is_set_for_key( $key )
+    {
+        // check to see if the key has children
+        // i.e. : 'settings.thing.foo'
+        if ( false !== strpos( $key, '.' ) )
+        {
+            $data      = $this->data;
+            $hierarchy = explode( '.', $key );
+
+            // loop through the hierarchy from left to right
+            while ( count( $hierarchy ) )
+            {
+                // check the next link from the front of the chain
+                $check = array_shift( $hierarchy );
+
+                // if it is set, update our data-check for the next loop
+                if ( isset( $data[ $check ] ) ) {
+                    $data = $data[ $check ];
+                } else {
+                    return false;
+                }
+            }
+        }
+        // the key has no children (.)s - it must be a top-level key
+        elseif ( ! isset( $this->data[ $key ] ) ) {
+            return false;
+        }
+
+        // we made it through the gauntlet, success!
+
+        return true;
+    }
+
 }
