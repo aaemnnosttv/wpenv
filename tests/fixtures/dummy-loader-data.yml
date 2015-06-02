@@ -1,0 +1,13 @@
+---
+foo: bar
+bar:
+  baz: zab
+  booze: yum
+one:
+  two:
+    three: third-level
+#  missing : nothing here
+
+# doesnotexist
+exists:
+#  doesnotexist: nope

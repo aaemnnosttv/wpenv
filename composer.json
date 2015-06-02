@@ -1,16 +1,25 @@
 {
     "name": "aaemnnosttv/bedrock-wpenv",
     "type": "wordpress-muplugin",
-    "description": "Environment-specific control",
-    "require": {
-        "symfony/yaml": "~2.6",
-        "composer/installers": "~1.0.6"
-    },
-    "license": "MIT License",
+    "description": "Environment-specific control over WordPress Options and more",
     "authors": [
         {
             "name": "Evan Mattson",
             "email": "me@aaemnnost.tv"
         }
-    ]
+    ],
+    "require": {
+        "php": ">=5.4",
+        "composer/installers": "~1.0",
+        "symfony/yaml": "~2.6"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^2.2"
+    },
+    "autoload": {
+        "psr-4": { "WpEnv\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "WpEnv\\Stub\\": "tests/stubs/" }
+    }
 }
