@@ -13,12 +13,7 @@ class LoaderSpec extends ObjectBehavior
     {
         $this->shouldHaveType('WpEnv\Stub\Loader');
     }
-
-    function it_sqwaks_if_it_is_instantiated_without_a_filepath()
-    {
-        $this->shouldThrow('\\InvalidArgumentException')->during('__construct', []);
-    }
-
+    
     function it_squaks_if_it_is_instantiated_with_a_broken_yml_file()
     {
         $this->shouldThrow('\\Symfony\\Component\\Yaml\\Exception\\ParseException')

@@ -11,8 +11,6 @@ abstract class Loader
 
     public function __construct( $filepath = '.wpenv.yml' )
     {
-        if ( ! $filepath ) throw new \InvalidArgumentException('A filepath to the config file must be provided.');
-
         $this->filepath = $filepath;
         $this->filename = pathinfo($this->filepath, PATHINFO_FILENAME);
         $this->load();
