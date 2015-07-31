@@ -1,5 +1,5 @@
 {
-    "name": "aaemnnosttv/bedrock-wpenv",
+    "name": "aaemnnosttv/wpenv",
     "type": "wordpress-muplugin",
     "description": "Environment-specific control over WordPress Options and more",
     "authors": [
