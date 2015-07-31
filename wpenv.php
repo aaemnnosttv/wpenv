@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WpEnv
  * Description: Environment-specific control
- * Version: 1.0
+ * Version: 0.2
  */
 
 // load classes whether installed as a package or standalone
