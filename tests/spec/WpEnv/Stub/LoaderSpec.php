@@ -5,15 +5,6 @@ use Prophecy\Argument;
 
 class LoaderSpec extends ObjectBehavior
 {
-    function let() {
-        $this->beConstructedWith( __DIR__ . '/../../../fixtures/dummy-loader-data.yml' );
-    }
-
-    function it_is_initializable()
-    {
-        $this->shouldHaveType('WpEnv\Stub\Loader');
-    }
-    
     function it_squaks_if_it_is_instantiated_with_a_broken_yml_file()
     {
         $this->shouldThrow('\\Symfony\\Component\\Yaml\\Exception\\ParseException')
@@ -22,6 +13,7 @@ class LoaderSpec extends ObjectBehavior
 
     function it_returns_true_if_data_is_set_for_all_required_keys_it_checks()
     {
+        $this->beConstructedWith( __DIR__ . '/../../../fixtures/dummy-loader-data.yml' );
         // top level
         $this->required(['foo']);
         // hierarchical
@@ -30,6 +22,7 @@ class LoaderSpec extends ObjectBehavior
 
     function it_throws_an_exception_if_there_are_missing_required_keys()
     {
+        $this->beConstructedWith( __DIR__ . '/../../../fixtures/dummy-loader-data.yml' );
         // top-level
         $this->shouldThrow('\\Exception', "Missing required keys: " . json_encode(['missing']))
             ->during('required', [ ['missing'] ]);
